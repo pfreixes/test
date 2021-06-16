@@ -1,0 +1,27 @@
+name: Auto Merge
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+    branches:
+      - main
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Automatic Approval
+        if: steps.check_files.outputs.CAN_AUTO_MERGE == 'true'
+        run: |
+          curl -XPOST -f \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"event":"APPROVE", "body":"Approved automatically."}' \
+            https://api.github.com/repos/${{github.repository}}/pulls/${{github.event.number || github.event.issue.number}}/reviews
+
+      - name: Automatic merge
+        if: steps.check_files.outputs.CAN_AUTO_MERGE == 'true'
+        run: |
+          curl -XPOST -f \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"auto_merge":true}' \
+            https://api.github.com/repos/${{github.repository}}/pulls/${{github.event.number || github.event.issue.number}}
