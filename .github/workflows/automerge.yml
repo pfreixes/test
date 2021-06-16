@@ -12,10 +12,15 @@ jobs:
         run: env
       - name: Automatic merge
         run: |
+          PR_ID=`curl -XPOST -f \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{repository(owner: "pfreixes", name:"test"){pullRequest(number: ${{ github.event.pull_request.number }}){id}}}' \
+            https://api.github.com/graphql | jq -r .data.repository.pullRequest.id`
           curl -XPOST -f \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d '{"query" : "mutation($id:String!){enablePullRequestAutoMerge(input: {pullRequestId:$id}){ clientMutationId }}", "variables" : {"id" : "${{ github.event.pull_request.head.ref }}"}}' \
+            -d '{"query" : "mutation($id:String!){enablePullRequestAutoMerge(input: {pullRequestId:$id}){ clientMutationId }}", "variables" : {"id" : "${PR_ID}"}}' \
             https://api.github.com/graphql
       - name: Automatic Approval
         run: |
