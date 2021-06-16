@@ -15,7 +15,7 @@ jobs:
           curl -XPOST -f \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d '{"query" : "mutation($id:String!){enablePullRequestAutoMerge(input: {pullRequestId:$id}){ clientMutationId }}", "variables" : {"id" : "${{ github.event.ref }}"}}' \
+            -d '{"query" : "mutation($id:String!){enablePullRequestAutoMerge(input: {pullRequestId:$id}){ clientMutationId }}", "variables" : {"id" : "${{ github.event.pull_request.head.ref }}"}}' \
             https://api.github.com/graphql
       - name: Automatic Approval
         run: |
