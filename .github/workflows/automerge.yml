@@ -8,6 +8,8 @@ jobs:
   automerge:
     runs-on: ubuntu-latest
     steps:
+      - name: Env
+        run: env
       - name: Automatic merge
         run: |
           curl -XPOST -f \
