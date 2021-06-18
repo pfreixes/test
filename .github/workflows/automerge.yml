@@ -12,13 +12,12 @@ jobs:
         run: env
       - name: Automatic merge
         run: |
-          echo "fooo"
+          echo ${{ github.event.actor.id }}
           DATA=`curl -XPOST -o - -f \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{repository(owner: "pfreixes", name:"test"){pullRequest(number: ${{ github.event.pull_request.number }}){id}}}' \
             https://api.github.com/graphql`
-          echo "bar"
           echo $DATA
           PR_ID=`echo $DATA | jq -r .data.repository.pullRequest.id`
           echo $PR_id
