@@ -1,0 +1,15 @@
+name: Test Workflow
+on:
+  workflow_dispatch:
+    inputs:
+      test_input:
+        description: 'Test input'
+        required: false
+        default: 'default'
+
+"jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test step
+        run: echo "Testing rerun action"
